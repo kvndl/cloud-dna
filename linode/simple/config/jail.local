@@ -1,0 +1,98 @@
+[INCLUDES]
+
+before = paths-fedora.conf
+
+[DEFAULT]
+
+# Number of seconds that a host is banned.
+bantime  = 1d
+
+# If generated "maxretry" during the last "findtime" seconds.
+findtime  = 10m
+
+# Number of failures before a host get banned.
+maxretry = 5
+
+# Number of matches stored in ticket (resolvable via tag <matches> in actions).
+maxmatches = %(maxretry)s
+
+backend = auto
+
+usedns = warn
+
+logencoding = auto
+
+# Jail?
+enabled = true
+
+# Mode of the filter.
+mode = normal
+
+# Filter to use by the jail.
+filter = %(__name__)s[mode=%(mode)s]
+
+# Destination email address.
+destemail = root@localhost
+
+# Sender email address used solely for some actions.
+sender = admin@noahschepers.com
+
+# Email action.
+mta = sendmail
+
+# Default protocol
+protocol = tcp
+
+# Specify chain where jumps would need to be added in ban-actions expecting parameter chain
+chain = <known/chain>
+
+# Ports to be banned
+port = 0:65535
+
+# Format of user-agent https://tools.ietf.org/html/rfc7231#section-5.5.3
+fail2ban_agent = Fail2Ban/%(fail2ban_version)s
+
+banaction = iptables-multiport
+banaction_allports = iptables-allports
+
+# The simplest action to take: ban only
+action_ = %(banaction)s[port="%(port)s", protocol="%(protocol)s", chain="%(chain)s"]
+
+# ban & send an e-mail with whois report to the destemail.
+action_mw = %(action_)s
+            %(mta)s-whois[sender="%(sender)s", dest="%(destemail)s", protocol="%(protocol)s", chain="%(chain)s"]
+
+# ban & send an e-mail with whois report and relevant log lines
+# to the destemail.
+action_mwl = %(action_)s
+             %(mta)s-whois-lines[sender="%(sender)s", dest="%(destemail)s", logpath="%(logpath)s", chain="%(chain)s"]
+
+# See the IMPORTANT note in action.d/xarf-login-attack for when to use this action
+#
+# ban & send a xarf e-mail to abuse contact of IP address and include relevant log lines
+# to the destemail.
+action_xarf = %(action_)s
+             xarf-login-attack[service=%(__name__)s, sender="%(sender)s", logpath="%(logpath)s", port="%(port)s"]
+
+# ban IP on CloudFlare & send an e-mail with whois report and relevant log lines
+# to the destemail.
+action_cf_mwl = cloudflare[cfuser="%(cfemail)s", cftoken="%(cfapikey)s"]
+                %(mta)s-whois-lines[sender="%(sender)s", dest="%(destemail)s", logpath="%(logpath)s", chain="%(chain)s"]
+
+action_blocklist_de  = blocklist_de[email="%(sender)s", service="%(__name__)s", apikey="%(blocklist_de_apikey)s", agent="%(fail2ban_agent)s"]
+
+# Report ban via badips.com, and use as blacklist
+action_badips = badips.py[category="%(__name__)s", banaction="%(banaction)s", agent="%(fail2ban_agent)s"]
+action_badips_report = badips[category="%(__name__)s", agent="%(fail2ban_agent)s"]
+
+# Report ban via abuseipdb.com.
+action_abuseipdb = abuseipdb
+
+action = %(action_)s
+
+[sshd]
+
+enabled = true
+port    = ssh
+logpath = %(sshd_log)s
+backend = %(sshd_backend)s
