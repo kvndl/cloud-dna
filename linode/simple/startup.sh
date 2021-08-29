@@ -48,4 +48,5 @@ alias ...='cd ../../'
 EOF
 
 # System - Reboot
+usermod --shell /usr/bin/zsh root
 shutdown -r now
