@@ -110,7 +110,7 @@ dnf install git zsh neofetch fail2ban -y
 sh -c "$(curl -fsSL "$OMZ_INSTALL")"
 
 # ZSH - Configure
-: > "$HOME/.zshrc"
+rm "$HOME/.zshrc"
 echo "$ZSHRC" >> "$HOME/.zshrc"
 
 # F2B - Configure
