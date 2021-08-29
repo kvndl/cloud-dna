@@ -3,7 +3,7 @@ resource "linode_stackscript" "heimdall" {
   description = "Setup Heimdall instance"
   script      = file("./startup.sh")
   images      = [var.image]
-  rev_note    = "v1.0"
+  rev_note    = "v1.1"
 }
 
 resource "linode_instance" "heimdall" {
