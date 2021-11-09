@@ -1,4 +1,4 @@
-resource "linode_stackscript" "heimdall" {
+resource "linode_stackscript" "this" {
   label       = "rocky8-heimdall"
   description = "Setup Heimdall instance"
   script      = file("./startup.sh")
@@ -6,7 +6,7 @@ resource "linode_stackscript" "heimdall" {
   rev_note    = "v1.1"
 }
 
-resource "linode_instance" "heimdall" {
+resource "linode_instance" "this" {
   image           = var.image
   label           = "${var.name}-${var.region}"
   region          = var.region

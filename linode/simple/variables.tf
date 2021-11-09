@@ -5,13 +5,13 @@ variable "linode_token" {
 
 variable "name" {
   type        = string
-  description = "Name to use when creating resources"
-  default     = "heimdall"
+  description = "Name for resources"
+  default     = "instance"
 }
 
 variable "region" {
   type        = string
-  description = "Location where the Linode is deployed"
+  description = "Location to deploy instance"
   default     = "us-east"
 }
 
@@ -29,10 +29,16 @@ variable "image" {
 
 variable "root_pass" {
   type        = string
-  description = "Initial password for the root user account"
+  description = "Password for root user"
 }
 
 variable "public_ssh_key" {
   type        = string
-  description = "Initial SSH key for the root user account"
+  description = "Public SSH key for root user"
+}
+
+variable "whitelist" {
+  type        = list(string)
+  default     = []
+  description = "Whitelist for SSH access"
 }
